@@ -11,10 +11,9 @@
 
 #pragma once
 #include "constraints.hpp"
-#include "type_defs.hpp"
-
-#include <bitset>
-#include <print>
+#include "type.hpp"
+#include "global.hpp"
+#include "buffer.hpp"
 
 // !!! IMPORTANT !!!
 // the packaging layout as of v0.1_r1 is:
@@ -25,50 +24,51 @@
 
 namespace meh {
 
+using Flags = uint8;
 
+static constexpr Flags PACK_DEBUG           = 1 << 0;
+static constexpr Flags PACK_VERBOSE         = 1 << 1;
+static constexpr Flags PACK_SILENT          = 1 << 2;
+static constexpr Flags PACK_NOERR           = 1 << 3;
+
+static constexpr Byte DEBUG_BYTE            = 0xDD;
+static constexpr Byte RELEASE_BYTE          = 0xAA;
 
 class Package {
 private:
-    using __Flags = std::bitset<1>;
-    __Flags _flags;
+    Flags _flags = std::numeric_limits<Flags>::min();
     meh::BinaryBuffer _buffer;
-    meh::Byte* _point = 0x00;
+
+    void __write_metadata() {
+        if (_flags & PACK_DEBUG)
+            _buffer.insert(_buffer.end(), DEBUG_BYTE);
+        else _buffer.insert(_buffer.end(), RELEASE_BYTE);
+    }
 
 public:
-    Package() {
-
-    }
+    Package() { __write_metadata(); }
+    Package(uint8 flags) : _flags(flags) { __write_metadata(); }
 
     meh::Byte* get_data() { return _buffer.data(); }
     size_t get_size() { return _buffer.size(); }
 
-    template<meh::constraint::is_basic_packageable T>
+    // add binary data to our package buffer.
+    // name is required for properly checking is data is unpacked correctly.
+    template<meh::constraint::is_packageable T>
     void pack(std::string name, T& data) {
-        if (1) {
-            uint16 name_len = static_cast<uint16>(name.size());
-            meh::NumType num = meh::type_to_num<T>();
-            _buffer.reserve(_buffer.size() + sizeof(name_len) + name.size() + sizeof(meh::NumType) + sizeof(T));
-
-            _buffer.insert(
-                _buffer.end(), 
-                reinterpret_cast<meh::Byte*>(&name_len),
-                reinterpret_cast<meh::Byte*>(&name_len) + sizeof(name_len));
-            _buffer.insert(
-                _buffer.end(), 
-                name.begin(),
-                name.end());
-            _buffer.insert(
-                _buffer.end(), 
-                reinterpret_cast<meh::Byte*>(&num),
-                reinterpret_cast<meh::Byte*>(&num) + sizeof(num));
-            _buffer.insert(
-                _buffer.end(), 
-                reinterpret_cast<meh::Byte*>(&data),
-                reinterpret_cast<meh::Byte*>(&data) + sizeof(T));
+        bool silent = _flags & PACK_SILENT;
+        bool verbose = silent ? false : _flags & PACK_VERBOSE;
+        if (_flags & PACK_DEBUG) {
+            if (verbose) meh::Global::__log("writing in DEBUG mode");
+            meh::write_buff(_buffer, name, true);
+            if (verbose) meh::Global::__log("NAME written (" + name + ")");
         }
+        meh::write_buff(_buffer, data);
+        if (verbose) meh::Global::__log("DATA written");
+        if (!silent) meh::Global::__log("data packed!");
     }
 
-
 };
+
 
 } // namespace meh

@@ -57,5 +57,9 @@ concept is_basic_packageable =
     std::is_same_v<T,   bool>       ||
     std::is_same_v<T,   char>       ||
     meh::constraint::is_int<T>      ;
+template<typename T>
+concept is_packageable =
+    is_basic_packageable<T> ||
+    is_string<T>            ;
 
 } // namespace meh

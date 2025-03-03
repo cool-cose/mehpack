@@ -12,16 +12,12 @@
 #pragma once
 #include "constraints.hpp"
 
-#include <vector>
-
 namespace meh {
 
 // byte definition is using unsigned char for maximum compatibility
 // we really shouldn't need to use std::byte but if we do we can
 // just change the Byte definition right here
 using Byte          = unsigned char;
-
-using BinaryBuffer  = std::vector<meh::Byte>;
 
 // int definitions
 // these should always be assured to be the reported size
@@ -65,10 +61,11 @@ enum class NumType : Byte {
 
     CHAR        = 0x30,
     STRING      = 0x31,
+
+    ENUM        = 0x40,
 };
 
 // converts a specific type to its equivalent byte
-
 template<typename T> requires (std::is_same_v<T, void>)         inline NumType type_to_num() { return NumType::VOID; }
 
 template<typename T> requires (std::is_same_v<T, int8>)         inline NumType type_to_num() { return NumType::INT8; }
@@ -115,6 +112,8 @@ inline size_t get_type_size_from_enum(const NumType& num) {
 
         case CHAR:   return sizeof(char);                           break;
         case STRING: return std::numeric_limits<size_t>::max();     break;
+
+        case ENUM: return 0; break;
     }
 }
 
