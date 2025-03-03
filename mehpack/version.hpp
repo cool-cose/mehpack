@@ -22,6 +22,9 @@
 // versions are formatted as:
 //      [OPTIONAL]state_v(VERSION)_r(REVISION)
 
+#define __MEH_INTERNAL_FVER_MAJ     0x00
+#define __MEH_INTERNAL_FVER_MIN     0x01
+
 namespace meh::info {
 
 // the version we are using for writing our files
@@ -30,7 +33,8 @@ namespace meh::info {
 // might be inconsistent or broken.
 // we keep track of this version so we can keep compatibility to read
 // from older versions and report versioning errors correctly.
-static constexpr const char* FILE_VERSION     = "v0.1_r1";
+static constexpr signed char FILE_VERSION_MAJOR         = __MEH_INTERNAL_FVER_MAJ;
+static constexpr signed char FILE_VERSION_MINOR         = __MEH_INTERNAL_FVER_MIN;
 
 // unrelated from the file version, this is simply the version of our library.
 // compatibility with older files should never be lost at a change of only the 

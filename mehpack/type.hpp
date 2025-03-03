@@ -65,24 +65,43 @@ enum class NumType : Byte {
     ENUM        = 0x40,
 };
 
+// returns the name of an enumerated type as a string.
+// this should be the only case of hard coded enum to string conversion,
+// all other cases should use the MAKE_ENUM API macro
+inline std::string numtype_to_str(const NumType& num) {
+    using enum NumType;
+    switch(num) {
+        case VOID:      return "VOID";                                      
+        case INT8:      return "INT8";                      
+        case INT16:     return "INT16";                     
+        case INT32:     return "INT32";                     
+        case INT64:     return "INT64";                     
+        case UINT8:     return "U_INT8";                     
+        case UINT16:    return "U_INT16";                    
+        case UINT32:    return "U_INT32";                    
+        case UINT64:    return "U_INT64";                    
+        case FLOAT:     return "FLOAT";                          
+        case DOUBLE:    return "DOUBLE";                         
+        case BOOL:      return "BOOL";                           
+        case CHAR:      return "CHAR";                           
+        case STRING:    return "STRING";     
+        case ENUM:      return "ENUM";
+    }
+}
+
 // converts a specific type to its equivalent byte
 template<typename T> requires (std::is_same_v<T, void>)         inline NumType type_to_num() { return NumType::VOID; }
-
 template<typename T> requires (std::is_same_v<T, int8>)         inline NumType type_to_num() { return NumType::INT8; }
 template<typename T> requires (std::is_same_v<T, int16>)        inline NumType type_to_num() { return NumType::INT16; }
 template<typename T> requires (std::is_same_v<T, int32>)        inline NumType type_to_num() { return NumType::INT32; }
 template<typename T> requires (std::is_same_v<T, int64>)        inline NumType type_to_num() { return NumType::INT64; }
-
 template<typename T> requires (std::is_same_v<T, uint8>)        inline NumType type_to_num() { return NumType::UINT8; }
 template<typename T> requires (std::is_same_v<T, uint16>)       inline NumType type_to_num() { return NumType::UINT16; }
 template<typename T> requires (std::is_same_v<T, uint32>)       inline NumType type_to_num() { return NumType::UINT32; }
 template<typename T> requires (std::is_same_v<T, uint64>)       inline NumType type_to_num() { return NumType::UINT64; }
-
 template<typename T> requires (std::is_same_v<T, float>)        inline NumType type_to_num() { return NumType::FLOAT; }
 template<typename T> requires (std::is_same_v<T, double>)       inline NumType type_to_num() { return NumType::DOUBLE; }
-
 template<typename T> requires (std::is_same_v<T, bool>)         inline NumType type_to_num() { return NumType::BOOL; }
-
 template<typename T> requires (std::is_same_v<T, char>)         inline NumType type_to_num() { return NumType::CHAR; }
 template<typename T> requires (meh::constraint::is_string<T>)   inline NumType type_to_num() { return NumType::STRING; }
 
@@ -93,27 +112,21 @@ template<typename T> requires (meh::constraint::is_string<T>)   inline NumType t
 inline size_t get_type_size_from_enum(const NumType& num) {
     using enum NumType;
     switch(num) {
-        case VOID:   return 0;                                      break;
-
-        case INT8:   return sizeof(meh::int8);                      break;
-        case INT16:  return sizeof(meh::int16);                     break;
-        case INT32:  return sizeof(meh::int32);                     break;
-        case INT64:  return sizeof(meh::int64);                     break;
-
-        case UINT8:  return sizeof(meh::uint8);                     break;
-        case UINT16: return sizeof(meh::uint16);                    break;
-        case UINT32: return sizeof(meh::uint32);                    break;
-        case UINT64: return sizeof(meh::uint64);                    break;
-
-        case FLOAT:  return sizeof(float);                          break;
-        case DOUBLE: return sizeof(float);                          break;
-
-        case BOOL:   return sizeof(bool);                           break;
-
-        case CHAR:   return sizeof(char);                           break;
-        case STRING: return std::numeric_limits<size_t>::max();     break;
-
-        case ENUM: return 0; break;
+        case VOID:      return 0;                                      
+        case INT8:      return sizeof(meh::int8);                      
+        case INT16:     return sizeof(meh::int16);                     
+        case INT32:     return sizeof(meh::int32);                     
+        case INT64:     return sizeof(meh::int64);                     
+        case UINT8:     return sizeof(meh::uint8);                     
+        case UINT16:    return sizeof(meh::uint16);                    
+        case UINT32:    return sizeof(meh::uint32);                    
+        case UINT64:    return sizeof(meh::uint64);                    
+        case FLOAT:     return sizeof(float);                          
+        case DOUBLE:    return sizeof(double);                         
+        case BOOL:      return sizeof(bool);                           
+        case CHAR:      return sizeof(char);                           
+        case STRING:    return std::numeric_limits<size_t>::max();     
+        case ENUM:      return 0; 
     }
 }
 

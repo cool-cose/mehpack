@@ -14,6 +14,7 @@
 #include "type.hpp"
 #include "global.hpp"
 #include "buffer.hpp"
+#include "version.hpp"
 
 // !!! IMPORTANT !!!
 // the packaging layout as of v0.1_r1 is:
@@ -41,16 +42,18 @@ private:
 
     void __write_metadata() {
         if (_flags & PACK_DEBUG)
-            _buffer.insert(_buffer.end(), DEBUG_BYTE);
-        else _buffer.insert(_buffer.end(), RELEASE_BYTE);
+            _buffer.emplace_back(DEBUG_BYTE);
+        else _buffer.emplace_back(DEBUG_BYTE);
+        meh::write_buff(_buffer, meh::info::FILE_VERSION_MAJOR, true);
+        meh::write_buff(_buffer, meh::info::FILE_VERSION_MINOR, true);
     }
 
 public:
     Package() { __write_metadata(); }
     Package(uint8 flags) : _flags(flags) { __write_metadata(); }
 
-    meh::Byte* get_data() { return _buffer.data(); }
-    size_t get_size() { return _buffer.size(); }
+    meh::Byte* data() { return _buffer.data(); }
+    size_t size() { return _buffer.size(); }
 
     // add binary data to our package buffer.
     // name is required for properly checking is data is unpacked correctly.
@@ -59,16 +62,27 @@ public:
         bool silent = _flags & PACK_SILENT;
         bool verbose = silent ? false : _flags & PACK_VERBOSE;
         if (_flags & PACK_DEBUG) {
-            if (verbose) meh::Global::__log("writing in DEBUG mode");
-            meh::write_buff(_buffer, name, true);
-            if (verbose) meh::Global::__log("NAME written (" + name + ")");
+        if (!silent) MEH_LOG("writing data -> " + name);
+            if (verbose) {
+                MEH_LOG("writing in DEBUG mode");
+                MEH_LOG("writing NAME chunk");
+                meh::write_buff_verbose(_buffer, name, true);
+            }
+            else {
+                meh::write_buff(_buffer, name, true);
+            }
         }
-        meh::write_buff(_buffer, data);
-        if (verbose) meh::Global::__log("DATA written");
-        if (!silent) meh::Global::__log("data packed!");
+        else if (verbose) MEH_LOG("writing in RELEASE mode");
+        if (verbose) {
+            MEH_LOG("writing DATA chunk");
+            meh::write_buff_verbose(_buffer, data);
+        }
+        else {
+            meh::write_buff(_buffer, data);
+        }
+        if (!silent) MEH_LOG("DATA packed!");
     }
 
 };
-
 
 } // namespace meh

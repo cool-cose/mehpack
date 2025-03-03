@@ -39,9 +39,7 @@ concept is_int =
     
 template<typename T>
 concept is_c_string = 
-    std::is_same_v<T,   const char*>    ||
-    std::is_same_v<T,   char*>          ||
-    std::is_same_v<T,   char[]>         ;
+    std::is_convertible_v<T,   const char*>;
 template<typename T>
 concept is_cpp_string =
     std::is_same_v<T,   std::string>    ;
