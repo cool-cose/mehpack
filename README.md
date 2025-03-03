@@ -58,7 +58,7 @@ out.close();
 ```
 
 ### enums
-mehpack offers the MEH_MAKE_ENUM macro, this will create an enum and then also create an overload of enum_to_str() and str_to_enum() to permit to mehpack to use the enum's literal name in debug mode
+mehpack offers the MEH_MAKE_ENUM macro, this will create an enum and then also create an overload of enum_to_str() and str_to_enum() to permit mehpack to use the enum's litteral name in debug mode
 ```C++
 MEH_ENUMTEMPLATE
 
