@@ -1,3 +1,14 @@
+// ----------------------------------------------------
+//  this source code is part of mehpack.
+//  copyright : Viola Inserra (cool_cose)  
+//  @WEBSITE -> https://cose.cool
+//  @GITHUB  -> https://github.com/cool-cose/mehpack
+//  @CONTACT :
+//       email   -> violainserra@gmail.com
+//       discord -> @cool_cose
+//       twitter -> @cool_cose
+// ------------------------------------------------------
+
 #pragma once
 
 #include <stdexcept>
