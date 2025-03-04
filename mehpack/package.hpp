@@ -16,28 +16,14 @@
 #include "buffer.hpp"
 #include "version.hpp"
 
-// !!! IMPORTANT !!!
-// the packaging layout as of v0.1_r1 is:
-//      with debug:
-//      [NAME LENGTH][NAME STRING][TYPE][DATA]
-//      without debug:
-//      [TYPE][DATA]
-
 namespace meh {
 
-using Flags = uint8;
-
-static constexpr Flags PACK_DEBUG           = 1 << 0;
-static constexpr Flags PACK_VERBOSE         = 1 << 1;
-static constexpr Flags PACK_SILENT          = 1 << 2;
-static constexpr Flags PACK_NOERR           = 1 << 3;
-
-static constexpr Byte DEBUG_BYTE            = 0xDD;
-static constexpr Byte RELEASE_BYTE          = 0xAA;
+static constexpr Byte DEBUG_BYTE            = 0xDD;     // sof byte for buffers with debug symbols
+static constexpr Byte RELEASE_BYTE          = 0xAA;     // sof byte for buffers without debug symbols
 
 class Package {
 private:
-    Flags _flags = std::numeric_limits<Flags>::min();
+    PackFlags _flags = std::numeric_limits<PackFlags>::min();
     meh::BinaryBuffer _buffer;
 
     void __write_metadata() {
@@ -58,7 +44,7 @@ public:
     // add binary data to our package buffer.
     // name is required for properly checking is data is unpacked correctly.
     template<meh::constraint::is_packageable T>
-    void pack(std::string name, T& data) {
+    void pack(const std::string& name, T& data) {
         bool silent = _flags & PACK_SILENT;
         bool verbose = silent ? false : _flags & PACK_VERBOSE;
         if (_flags & PACK_DEBUG) {

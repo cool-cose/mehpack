@@ -130,4 +130,12 @@ inline size_t get_type_size_from_enum(const NumType& num) {
     }
 }
 
+// flag types related to packing data
+using PackFlags = uint8;    // for now 8 flags should do it
+
+static constexpr PackFlags PACK_DEBUG           = 1 << 0;   // write with debug symbols
+static constexpr PackFlags PACK_VERBOSE         = 1 << 1;   // log out all useful info
+static constexpr PackFlags PACK_SILENT          = 1 << 2;   // never log anything but errors
+static constexpr PackFlags PACK_NOERR           = 1 << 3;   // never report errors
+
 } // namespace meh

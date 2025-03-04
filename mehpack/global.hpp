@@ -22,12 +22,12 @@
 
 namespace meh {
 
-using LogCallback = std::function<void(std::string)>;
+using LogCallback = std::function<void(const std::string&)>;
 
 class Global {
 private:
-    inline static LogCallback _log_callback = [](std::string m){ printf("meh [log] -> %s", m.c_str()); };
-    inline static LogCallback _err_callback = [](std::string m){ printf("meh [error] -> %s", m.c_str()); };
+    inline static LogCallback _log_callback = [](const std::string& m){ printf("meh [log] -> %s", m.c_str()); };
+    inline static LogCallback _err_callback = [](const std::string& m){ printf("meh [error] -> %s", m.c_str()); };
 
 public:
     // set the function callback to log, your function must be able to accept a singular std::string argument.
@@ -39,8 +39,8 @@ public:
     static void set_error_callback(const LogCallback& callback) { _err_callback = callback; }
 
     // !!! internal
-    static void __err(std::string m) { _log_callback(std::format("mehpack >> {}", m)); }
-    static void __log(std::string m) { _log_callback(std::format("mehpack >> {}", m)); }
+    static void __err(const std::string& m) { _log_callback(std::format("mehpack >> {}", m)); }
+    static void __log(const std::string& m) { _log_callback(std::format("mehpack >> {}", m)); }
 };
 
 } // namespace meh
