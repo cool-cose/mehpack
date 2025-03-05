@@ -1,7 +1,7 @@
 # mehpack
 A simple C++ [HEADER ONLY *wink wink*] binary archiving library with some qol features like debug name flags for variables
 
-![screenshot](icon_art.png)
+![screenshot](page_art/icon_art.png)
 
 meh... it's good enough
 
@@ -17,6 +17,8 @@ meh... it's good enough
 this library is all headers, simply including mehpack.hpp will do the trick, there is also a cmake file included to create an interface to include the headers.
 
 ### logging
+![screenshot](page_art/log.png)
+
 mehpack defaults to logging with printf(), but you can bind your own logging callback! all you have to do is bing a function that takes in an std::string.
 ```C++
 // for pure logging functions
@@ -29,6 +31,8 @@ meh::Global::set_error_callback([&error](const std::string& message) { error->er
 ```
 
 ### packages
+![screenshot](page_art/package.png)
+
 mehpack is based around packages, you can pack stuff inside, and then get it's data and size to use as a range however you like!
 ```C++
 meh::Package package(meh::PACK_DEBUG | meh::PACK_VERBOSE);
