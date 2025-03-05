@@ -26,8 +26,8 @@ meh::Global::set_logging_callback(log);
 meh::Global::set_error_callback(error);
 
 // for class method logging functions
-meh::Global::set_logging_callback([&console](const std::string& message) { console->log(message); };
-meh::Global::set_error_callback([&error](const std::string& message) { error->error(message); };
+meh::Global::set_logging_callback([&console](const std::string& message) { console->log(message); });
+meh::Global::set_error_callback([&error](const std::string& message) { error->error(message); });
 ```
 
 ### packages

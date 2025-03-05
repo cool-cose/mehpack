@@ -63,6 +63,8 @@ enum class NumType : Byte {
     STRING      = 0x31,
 
     ENUM        = 0x40,
+
+    OBJECT      = 0x50,
 };
 
 // returns the name of an enumerated type as a string.
@@ -86,6 +88,7 @@ inline std::string numtype_to_str(const NumType& num) {
         case CHAR:      return "CHAR";                           
         case STRING:    return "STRING";     
         case ENUM:      return "ENUM";
+        case OBJECT:    return "OBJECT";
     }
 }
 
@@ -106,9 +109,7 @@ template<typename T> requires (std::is_same_v<T, char>)         inline NumType t
 template<typename T> requires (meh::constraint::is_string<T>)   inline NumType type_to_num() { return NumType::STRING; }
 
 // returns the size of a type from its enumerator
-// EDGECASES:
-//      VOID -> 0
-//      STRING -> MAX OF size_t
+// if the size of a type is impossible to know statically 0 will be returned
 inline size_t get_type_size_from_enum(const NumType& num) {
     using enum NumType;
     switch(num) {
@@ -125,8 +126,9 @@ inline size_t get_type_size_from_enum(const NumType& num) {
         case DOUBLE:    return sizeof(double);                         
         case BOOL:      return sizeof(bool);                           
         case CHAR:      return sizeof(char);                           
-        case STRING:    return std::numeric_limits<size_t>::max();     
+        case STRING:    return 0;  
         case ENUM:      return 0; 
+        case OBJECT:    return 0;
     }
 }
 
