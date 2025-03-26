@@ -41,6 +41,8 @@ using uint64    = unsigned long long;
 //      -   FLOAT   -> 1
 //      -   BOOL    -> 2
 //      -   CHAR    -> 3
+//      -   ENUM    -> 4
+//      -   OBJECT  -> 5
 enum class NumType : Byte {
     VOID        = 0xFF,
 
