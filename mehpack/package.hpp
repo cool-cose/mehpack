@@ -18,7 +18,7 @@
 
 namespace meh {
 
-static constexpr Byte DEBUG_BYTE            = 0xDD;     // sof byte for buffers with debug symbols
+static constexpr Byte DEBUG_BYTE            = 0xDB;     // sof byte for buffers with debug symbols
 static constexpr Byte RELEASE_BYTE          = 0xAA;     // sof byte for buffers without debug symbols
 
 class Package {
@@ -29,7 +29,7 @@ private:
     void __write_metadata() {
         if (_flags & PACK_DEBUG)
             _buffer.emplace_back(DEBUG_BYTE);
-        else _buffer.emplace_back(DEBUG_BYTE);
+        else _buffer.emplace_back(RELEASE_BYTE);
         meh::write_buff(_buffer, meh::info::FILE_VERSION_MAJOR, true);
         meh::write_buff(_buffer, meh::info::FILE_VERSION_MINOR, true);
     }
